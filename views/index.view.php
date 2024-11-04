@@ -363,10 +363,11 @@
       </ul>
 
       <p>
-        One final, final thing. There are a couple of alteratives to the
-        <samp>if</samp> statement, such as the <samp>ternary</samp> and
-        <samp>switch</samp> operators, each with its own use-case. However, I'll
-        discuss those both individually in their own article.
+        One final, final thing about the <samp>if</samp> statement. There are a
+        couple of alteratives to the <samp>if</samp> statement, such as the
+        <samp>ternary</samp> and <samp>switch</samp> operators, each with its
+        own use-case. However, I'll discuss those both individually in their own
+        article.
       </p>
     </section>
   </article>
