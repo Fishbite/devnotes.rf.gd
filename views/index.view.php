@@ -3,7 +3,8 @@
     <h1><?=$mainTitle?></h1>
     <p>
       This is a place where I write things about php. Hopefully there's some
-      stuff that you may find interesting and useful.
+      stuff that you may find interesting and useful. However, this is not meant
+      to be a tutorial, but more of a reference for my future self!
     </p>
   </section>
 
