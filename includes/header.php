@@ -35,15 +35,15 @@
       rel="stylesheet"
     />
 
-    <link rel="stylesheet" href="./styles/styles.css" />
-    <link rel="stylesheet" href="./styles/prism.css" />
+    <link rel="stylesheet" href="https://devnotes.rf.gd/styles/styles.css" />
+    <link rel="stylesheet" href="https:/devnotes.rf.gd/styles/prism.css" />
   </head>
   <body>
     <header>
       <nav>
         <ul>
-          <li><a href="./">home</a></li>
-          <li><a href="forms-basic.php">forms</a></li>
+          <li><a href="https://devnotes.rf.gd/">home</a></li>
+          <li><a href="https://devnotes.rf.gd/forms-basic.php">forms</a></li>
         </ul>
       </nav>
     </header>
