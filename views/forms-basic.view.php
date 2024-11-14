@@ -346,9 +346,9 @@
 
     <p>The data contained within the <code>superglobals</code> should be treated as <em>dangerous</em> as it could contain code that executes XSS (cross-site-scripting) or SQL injection threats.</p>
 
-    <p>If data is to be used in another type of code, HTML, SQL query, JSON string etc. it should be made to comply with the rules of that code type using tools (funtions/methods) that have been built for that purpose. i.e. <samp>htmlspcialchars()</samp>, <code>prepared statements</code> for including data in an SQL query, <samp>JSON_encode()</samp> to correctly format data in a JSON <samp>string</samp> etc.</p>
+    <p>If data is to be used in another type of code, HTML, SQL query, JSON string etc. it should be made to comply with the rules of that code type using tools (funtions/methods) that have been built for that purpose. i.e. <samp>htmlspcialchars()</samp> when printing to the browser, <code>prepared statements</code> for including data in an SQL query, <samp>JSON_encode()</samp> to correctly format data in a JSON <samp>string</samp> etc.</p>
 
-    <p>The PDO and MySQLi extensions are available to create prepared statements. There are three steps to create them: prepare, bind and execute. The <code>mysqli</code> method is purely for use with a MySQL data base, while PDO can be used for any database engine.</p>
+    <p>The PDO and MySQLi extensions are available to create prepared statements. There are three steps to create them: prepare, bind and execute. The <code>mysqli</code> method is purely for use with a MySQL database, while PDO can be used for any database engine.</p>
 
     <p>Making data safe to use is fairly complicated, but, with a little thought and consideration, it can be achieved using pre-existing tools and in general, we should not have to create our own custom code to perform those tasks.</p>
 
