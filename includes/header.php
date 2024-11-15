@@ -35,8 +35,8 @@
       rel="stylesheet"
     />
 
-    <link rel="stylesheet" href="https://devnotes.rf.gd/styles/styles.css" />
-    <link rel="stylesheet" href="https:/devnotes.rf.gd/styles/prism.css" />
+    <link rel="stylesheet" href="styles/styles.css" />
+    <link rel="stylesheet" href="styles/prism.css" />
   </head>
   <body>
     <header>
