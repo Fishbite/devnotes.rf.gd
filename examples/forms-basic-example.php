@@ -20,6 +20,9 @@ $simpleForm = <<<'SIMPLEFORM'
     <label for="name">Your name:</label>
     <input name="name" id="name" type="text">
 
+    <label for="lname">Last Name:</label>
+    <input name="lname" id="lname" type="text" />
+
     <label for="age">Your age:</label>
     <input name="age" id="age" type="number">
 
@@ -91,12 +94,25 @@ VALIDFORM;
 
 $formAction2 = <<<'FORMACTION2'
 <?php
-echo 'Thanks for submitting our form<br>';
+echo 'Thanks for submitting our form<br/>';
 
 echo '<pre>'; // format nicely
 var_dump($_POST); // print the contents of $_POST
 echo '</pre>';
 FORMACTION2;
+
+$formAction3 = <<<'FORMACTION3'
+<?php
+echo 'Hey '.htmlspecialchars($_POST["fname"]).', thanks for submitting our form<br><br>';
+
+echo 'Please check the data is correct:<br><br>';
+
+foreach($_POST as $val) {
+    echo htmlspecialchars($val) .'<br>';
+}
+echo '<br>';
+echo '<a href="../forms-basic.php">forms</a>';
+FORMACTION3;
 
 $formResult = <<<'FORMRESULT'
 Thanks for submitting our form
@@ -111,13 +127,47 @@ array(3) {
 }
 FORMRESULT;
 
-$formData1 = <<<'FORMDATA1'
+$formAction3 = <<<'FORMACTION3'
 echo $_POST["fname"];
-FORMDATA1;
+FORMACTION3;
 
-$formData2 = <<<'FORMDATA2'
+$formAction4 = <<<'FORMACTION4'
 echo htmlspecialchars($_POST["fname"]);
-FORMDATA2;
+FORMACTION4;
+
+$formAction5 = <<<'FORMACTION5'
+<?php
+echo 'Hey '. htmlspecialchars($_POST["fname"]) . ', thanks for submitting our form<br><br>';
+
+echo 'This is the data you entered:<br><br>';
+
+// iterate through each index in the $_POST array
+foreach($_POST as $key => $val) {
+
+    // check the index doesn't hold sensitive data
+    if($_POST[$key] !== "password") {
+
+    // print the contents safely
+    echo htmlspecialchars($val) .'<br>';
+    }
+}
+
+echo '<br>';
+// give the user a way to get back to the form page
+echo '<a href="../forms-basic.php">forms</a>';
+FORMACTION5;
+
+$formResult2 = <<<'FORMRESULT2'
+Hey jon, thanks for submitting our form
+
+This is the data you entered:
+
+jon
+doe
+56
+
+forms // link back to the form page
+FORMRESULT2;
 
 
 $dumpPost = <<<'DUMPPOST'

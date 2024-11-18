@@ -129,12 +129,12 @@
       </p>
 
       <section class="code-block">
-        <span>Form with HTML validation, action & method attributes</span>
+        <span>Form with very basic HTML validation plus action & method attributes</span>
         <pre><code class="language-php"><?= clean($validatedForm)?></code></pre>
       </section>
 
       <div class="form-container">
-        <form action="includes/formaction.php" method="post">
+        <form action="includes/formaction2.php" method="post">
           <label for="fname">First Name:</label>
           <input name="fname" id="fname" type="text" required />
       
@@ -144,28 +144,18 @@
           <label for="age">Your Age:</label>
           <input name="age" id="age" type="number" required min="1" max="150" />
       
-          <button type="submit">Submit</button>
+          <button type="submit">Send</button>
          </form> 
       </div>
 
       <p>Which gives us the very same form we had before, except that, if we now press the submit button without filling in any or all of the fields, a message is displayed to the user &mdash; "Please fill out this field". This is because we added the <samp>required</samp> attribute to each input element. If we try to submit a number in the <samp>age</samp> field that is less than 1, or, greater  than 150, or, if we try to submit non-numeric values, the user recieves an additional message telling them what range of numbers the form will accept, or to enter a number if the data is non-numeric. This is <em>front-end</em> validation. It's the first form of defense against duff data.</p>
 
-      <p>Server-side validation should also be performed along with the neccessary logics to handle each case individually.</p>
+
+      <p>When the data arrives at the server, each field should be checked that it is the correct type of data, e.g. that it is a valid number, text, url, email address and is of the correct length etc. If it is not what is expected, or does not fit the rules of that data type, it should be rejected. Once it is established as valid, it should be prepared for its destination and stripped of any potentially harmful characters.</p>
 
       <h2>the form's <code>action</code> attribtue</h2>
 
       <p>The forms' <samp>action</samp> attribute defines where that data gets sent, which can be any valid absolute (https://example.com) or relative (/somefile.php) URL. Generally, we would want to send the data back to the server where the form resides, so we would use a relative URL pointing to a file on our form's server. The file should be capable of handling the form data including <em>server-side</em> validation.</p>
-
-      <p>Fill out the form with some valid data and click the <samp>submit</samp> button. It will take you to the <code>formaction.php</code> page that displays a "Thank you message".</p>
-
-      <p>All I did was to create a php file named <code>formaction.php</code> that echo'd the thank you message. See below:</p>
-
-      <section class="code-block">
-        <span>The <code>formaction.php</code> file</span>
-        <pre><code class="language-php"><?= clean($formAction)?></code></pre>
-      </section>
-
-      <p>But where is our data?</p>
 
       <h2>the form's <code>method</code> attribute</h2>
       <p>The HTML protocol provides several ways to perform a <samp>request</samp> to the server, with <samp>GET</samp> and <samp>POST</samp> being the most common used. We'll use the <samp>POST</samp> method here as the data is submitted in the body of the <samp>request</samp>. If we use the <samp>GET</samp> <samp>request</samp>, all data is appended to the url in the browser's address bar, including any sensitive data such as passwords!</p>
@@ -180,7 +170,7 @@
         <pre><code class="language-php"><?= clean($formAction2) ?></code></pre>
       </section>
 
-      <p>So, we've created the <code>$formAction2.php</code> file by adding a <samp>&lt;/br&gt;</samp> tag to the end of our <em>'Thank you'</em> message from our <code>formaction.php file</code>, this forces PHP to print a line break after the message, then we've used the <samp>var_dump</samp> function to print out the entire contents of the <samp>$_POST</samp> <code>superglobal</code>. We wrapped the <samp>var_dump</samp> function in <samp>&lt;pre&gt;</samp> tags to make the printed output more human readable.</p>
+      <p>So, we've created the <code>$formAction2.php</code> file by adding a <samp>&lt;/br&gt;</samp> tag to the end of our <em>'Thank you'</em> message from our <code>formaction.php file</code>, this forces PHP to print a line break after the message, then we've used the <samp>var_dump</samp> function to print out the entire contents of the <samp>$_POST</samp> <code>superglobal</code>. We wrapped the <samp>var_dump</samp> function in <samp>&lt;pre&gt;</samp> tags to make the printed output a bit more friendly to read.</p>
 
       <p>Now when we fill out our form and submit it, we get the following output on our <code>formaction2.php</code> page:</p>
 
@@ -189,17 +179,18 @@
         <pre><code class="language-php"><?= clean($formResult) ?></code></pre>
       </section>
 
-      <p>We can see that the <samp>$_POST</samp> variable contains an associative array storing our form data in <code>name=>value</code> paired indices. While <samp>var_dump</samp> is a useful tool for taking a peek at a variable while we are developing, it's not that practicle for use in production, so, we'll take a look how to handle the data in a more useful way.</p>
+      <p>We can see that the <samp>$_POST</samp> variable contains an associative array storing our form data in <code>name=>value</code> paired indices. While <samp>var_dump</samp> is a useful tool for taking a peek at a variable while we are developing, it's <strong>should not be used in production</strong>.</p>
 
       <h2>extract data from <code>$_POST</code></h2>
+
       <p>We can pull out the data from <samp>$_POST</samp> in the same way that you would pull data out of any user defined associative array using the array name and index names.</p>
 
       <section class="code-block">
         <span>use array indices to access data</span>
-        <pre><code class="language-php"><?= clean($formData1)?></code></pre>
+        <pre><code class="language-php"><?= clean($formAction3)?></code></pre>
       </section>
 
-      <p>So, we simply used an <samp>echo</samp> command to print out the value of the index named<samp>fname</samp>. Note that the index name must wrapped in quotes. However, we have to take care when doing this, especially because this is raw data that has been entered into our web app'.</p>
+      <p>So, we simply used an <samp>echo</samp> command to print out the value of the index named <samp>fname</samp>. Note that the index name must wrapped in quotes. However, we have to take care when doing this, especially because this is raw data that has been entered into our web app'.</p>
 
       <p><strong>WARNING! Data may contain dragons!</strong></p>
 
@@ -207,8 +198,39 @@
 
       <section class="code-block">
         <span>make data safe to print to the browser</span>
-        <pre><code class="language-php"><?= clean($formData2)?></code></pre>
+        <pre><code class="language-php"><?= clean($formAction4)?></code></pre>
       </section>
+
+      <p>So, to output content on our <samp>formaction.php</samp> page in a safer way, we'll loop over <samp>$_POST</samp> using a <samp>foreach()</samp> loop, where we can control exactly what gets printed to the page and what does not. We'll use an <samp>if()</samp> condition to make sure we skip printing any field called <samp>password</samp>, just as an example.</p>
+
+      <section class="code-block">
+        <span>loop over <samp>$_POST</samp> & make data safe to print to the browser</span>
+        <pre><code class="language-php"><?= clean($formAction5)?></code></pre>
+      </section>
+
+      <p>So in the above, <samp>$key</samp> holds the fieldname of the current index we are iterating over, and the <samp>if()</samp> condition simply says: <em>"as long as the fieldname is NOT <samp>password</samp></em> then echo the value of the current index." And, we make the data safe using <samp>htmlspecialchars()</samp>. We'll go into the <samp>foreach()</samp> condition in depth in another article, but I thought it would be a good oportunity to slip it in here, as it's real-life use case. Note that we also added a link back to the form page. The output on our <samp>formAction.php</samp> page is now:</p>
+
+      <section class="code-block">
+        <span>Form result using <samp>foreach()</samp>:</span>
+        <pre><code class="language-php"><?= clean($formResult2) ?></code></pre>
+      </section>
+
+      <p>Try submitting our form again to check this out.</p>
+
+      <div class="form-container">
+        <form action="includes/formaction.php" method="post">
+          <label for="fname">First Name:</label>
+          <input name="fname" id="fname" type="text" required />
+      
+          <label for="lname">Last Name:</label>
+          <input name="lname" id="lname" type="text" required />
+      
+          <label for="age">Your Age:</label>
+          <input name="age" id="age" type="number" required min="1" max="150" />
+      
+          <button type="submit">Send</button>
+         </form> 
+      </div>
 
       <p>So, to reiterate, <strong>every single print or echo</strong> statement should use the <samp>htmlspecialchars()</samp> function, however, be aware that <samp>htmlspecialchars()</samp> only makes data safe for embeding strings into HTML markup, it does <strong>NOT</strong> make it safe to use in an SQL query, to use in an HTML attribute, to include it in a JavaScript string etc. etc. For us to be able to embed the data in any other type of code, we must make it comply with the rules of that code type. However, you must be aware that such rules could be too complicated for us to follow them all manually, therefore, whenever possible, we should use dedicated tools (functions) to make the data comply with the rules of the type of code that we are using the data in. For instance, <samp>json_encode()</samp> should be used to properly format data for use in a JSON string and, a JSON string should <em>never</em> be constructed manually.</p>
 
@@ -222,7 +244,9 @@
         <li>Use output escaping when displaying data on a website</li>
       </ul>
 
-      <p>To give another example, lets look at the <samp>$_POST</samp> super global again and the data it is holding from our form:</p>
+
+      <h2>Storing data in a database</h2>
+      <p>Lets look at the <samp>$_POST</samp> super global again and the data it is holding from our form:</p>
 
       <section class="code-block">
         <span>print the contents of <samp>$_POST</samp></span>
@@ -336,7 +360,7 @@
     <h3>conclusion</h3>
     <p>PHP has some very powerful features to handle forms and the data they collect. And while that is true, there are some excellent <em>form processing services</em> that will deal with all the complexities of form handling for us. Those are definately worth investingating unless you are intent on using/learning PHP.</p>
 
-    <p>The forms presented to the user must have front end validation performed on them, to ensure that we get the right type of data and also that any <samp>required</samp> fields are not empty. Further back-end validiation should be done on the server, but that has not been covered in this article.</p>
+    <p>The forms presented to the user must have front end validation performed on them, to ensure that we get the right type of data and also that any <samp>required</samp> fields are not empty. Further back-end validiation should be done on the server, as discussed in this article.</p>
 
     <p>The form's <samp>action</samp> attribute defines where the data is sent, ultimately to a file that can handle the form data.</p>
 

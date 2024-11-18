@@ -42,8 +42,10 @@
     <header>
       <nav>
         <ul>
-          <li><a href="https://devnotes.rf.gd/">home</a></li>
-          <li><a href="https://devnotes.rf.gd/forms-basic.php">forms</a></li>
+          <!-- <li><a href="https://devnotes.rf.gd/">home</a></li>
+          <li><a href="https://devnotes.rf.gd/forms-basic.php">forms</a></li> -->
+          <li><a href=".">home</a></li>
+          <li><a href="forms-basic.php">forms</a></li>
         </ul>
       </nav>
     </header>
