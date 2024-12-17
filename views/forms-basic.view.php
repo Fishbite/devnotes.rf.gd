@@ -110,7 +110,7 @@
       </p>
       <p>What happens if we press the submit button right now?</p>
       <p>
-        Nothing! Well, not exactly the page we are on suddenly jumps to the top.
+        Nothing! Well, not exactly! The page we are on suddenly jumps to the top.
         This is because we haven't specified <samp>action</samp> or
         <samp>method</samp> attributes for the form. When this is the case, the
         form data is sent to the same page that the form is present on. Not very
@@ -375,6 +375,5 @@
     <p>The PDO and MySQLi extensions are available to create prepared statements. There are three steps to create them: prepare, bind and execute. The <code>mysqli</code> method is purely for use with a MySQL database, while PDO can be used for any database engine.</p>
 
     <p>Making data safe to use is fairly complicated, but, with a little thought and consideration, it can be achieved using pre-existing tools and in general, we should not have to create our own custom code to perform those tasks.</p>
-
   </article>
 </main>
