@@ -313,7 +313,7 @@ class Database5 {
 }
 
 $query5 = "SELECT * FROM products";
-$db5 = new Database4();
+$db5 = new Database5();
 $result5 = $db5->query($query5)->fetchAll(PDO::FETCH_ASSOC);
 // dd($result5);
 echo '<strong>$db5 results:</strong><br><br>';
@@ -400,7 +400,7 @@ $db6 = new Database6($config);
 $result6 = $db6->query($query5)->fetchAll(PDO::FETCH_ASSOC);
 // dd($result6);
 echo '<strong>$db6 results:</strong><br><br>';
-foreach($result5 as $key=>$value) {
+foreach($result6 as $key=>$value) {
 
     echo $value['id'] . '<br><br>';
 }
@@ -459,14 +459,119 @@ class Database7 {
 // and everything still works
 $query7 = "SELECT * FROM products";
 $db7 = new Database7($config);
-$result7 = $db7->query($query5)->fetchAll();
+$result7 = $db7->query($query7)->fetchAll();
 // dd($result7);
 echo '<strong>$db7 results:</strong><br><br>';
-foreach($result5 as $key=>$value) {
+foreach($result7 as $key=>$value) {
 
     echo $value['image'] . '<br><br>';
 }
 
 // now let's move the `$config` array up a level & into its own file `config.php`
+// $config = [
+//     "host" => "localhost",
+//     "port" => 3306,
+//     "dbname" => "dbshop",
+//     "charset" => "utf8mb4"
+// ];
+
+// let $config = anything that is returned by config.php
+$config = require 'config.php';
+
+class Database8 {
+
+    // property to hold the `PDO` instance
+    public $connection;
+
+    public function __construct($config) {
+
+        // so we can set ';' as the separator that we need in the $dsn string:
+        http_build_query($config, '', ';');
+
+        // so now we can assign the result to our $dsn variable:
+        $dsn = 'mysql:' . http_build_query($config, '', ';');
+        // and everything works as before
+
+        // $this->connection = new PDO($dsn, $user = 'root');
+        $this->connection = new PDO($dsn, 'root', '', [
+            'PDO::ATTR_DEFAULT_FETCH_MODE' => 'PDO::FETCH_ASSOC',
+        ]);
+    }
+
+    // method to query the DB
+    public function query($query) {
+
+        // ceate the prepared statement (query)
+        $statement = $this->connection->prepare($query);
+        $statement->execute(); // run the query
+
+        // we've removed the fetch() method and just return
+        // the result of the query
+        return $statement;
+    }
+}
+
+// and everything still works
+$query8 = "SELECT * FROM products";
+$db8 = new Database8($config['dbshop']);
+$result8 = $db8->query($query8)->fetchAll();
+// dd($result8);
+echo '<strong>$db8 results:</strong><br><br>';
+foreach($result8 as $key=>$value) {
+
+    echo $value['title'] . '<br><br>';
+}
+
+// we can also move the hard coded username & password out of the PDO construct
+// and accept them as arguments when we create an instance of the Database class:
+// like so: new Database9($config['dbshop'], 'root', '');
+
+// let $config = anything that is returned by config.php
+$config = require 'config.php';
+
+class Database9 {
+
+    // property to hold the `PDO` instance
+    public $connection;
+
+    public function __construct($config, $username, $password) {
+
+        // so we can set ';' as the separator that we need in the $dsn string:
+        http_build_query($config, '', ';');
+
+        // so now we can assign the result to our $dsn variable:
+        $dsn = 'mysql:' . http_build_query($config, '', ';');
+        // and everything works as before
+
+        // $this->connection = new PDO($dsn, $user = 'root');
+        $this->connection = new PDO($dsn, $username, $password, [
+            'PDO::ATTR_DEFAULT_FETCH_MODE' => 'PDO::FETCH_ASSOC',
+        ]);
+    }
+
+    // method to query the DB
+    public function query($query) {
+
+        // ceate the prepared statement (query)
+        $statement = $this->connection->prepare($query);
+        $statement->execute(); // run the query
+
+        // we've removed the fetch() method and just return
+        // the result of the query
+        return $statement;
+    }
+}
+
+// and everything still works
+$query9 = "SELECT * FROM products";
+// now we can pass in the username & password when we create a new instance of the class:
+$db9 = new Database9($config['dbshop'], 'root', '');
+$result9 = $db9->query($query9)->fetchAll();
+// dd($result9);
+echo '<strong>$db9 results:</strong><br><br>';
+foreach($result9 as $key=>$value) {
+
+    echo $value['title'] . '<br><br>';
+}
 
 #### CONNECTING TO A DATABASE END ####
