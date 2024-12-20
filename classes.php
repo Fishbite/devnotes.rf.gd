@@ -536,8 +536,10 @@ class Database9 {
 
     public function __construct($config, $username, $password) {
 
-        // so we can set ';' as the separator that we need in the $dsn string:
-        http_build_query($config, '', ';');
+        // php's in-built function is meant to create a URL query string, but,
+        // we can use it to construct our DSN string using its' parametersto change the separator
+        // We can set ';' as the separator that we need in the $dsn string:
+        // http_build_query($config, '', ';');
 
         // so now we can assign the result to our $dsn variable:
         $dsn = 'mysql:' . http_build_query($config, '', ';');
@@ -572,6 +574,20 @@ echo '<strong>$db9 results:</strong><br><br>';
 foreach($result9 as $key=>$value) {
 
     echo $value['title'] . '<br><br>';
+}
+
+// let's just select 1 record:
+$query10 = "SELECT * FROM products where id = 3";
+// now we can pass in the username & password when we create a new instance of the class:
+$db9 = new Database9($config['dbshop'], 'root', '');
+// we can also now change the query method to fetch a single record:
+$result9 = $db9->query($query10)->fetch(2); // had to set fetch mode in order to get associative array???
+// dd($result9);
+echo '<strong>$db9, query 10 results:</strong><br><br>';
+foreach($result9 as $key=>$value) {
+
+    // print_r($value);
+    echo '<strong>' .$key . '</strong>:' . ' ' . $value . '<br><br>';
 }
 
 #### CONNECTING TO A DATABASE END ####
