@@ -565,7 +565,7 @@ class Database9 {
 }
 
 // and everything still works
-$query9 = "SELECT * FROM products";
+$query9 = "SELECT * FROM recipe_cards WHERE imgTitle = 'sausage casserole'";
 // now we can pass in the username & password when we create a new instance of the class:
 $db9 = new Database9($config['dbshop'], 'root', '');
 $result9 = $db9->query($query9)->fetchAll();
@@ -573,7 +573,7 @@ $result9 = $db9->query($query9)->fetchAll();
 echo '<strong>$db9 results:</strong><br><br>';
 foreach($result9 as $key=>$value) {
 
-    echo $value['title'] . '<br><br>';
+    echo $key . ': ' .$value['imgTitle'] . '<br><br>';
 }
 
 // let's just select 1 record:
