@@ -1,5 +1,8 @@
 <?php
 
+
+include 'functions.php'; // dd()
+
 // let $config = anything that is returned by config.php
 $config = require 'config.php';
 
@@ -37,11 +40,11 @@ class Database {
      * @param mixed $query
      * @return bool|PDOStatement
      */
-    public function query($query) {
+    public function query($query, $params) {
 
         // ceate the prepared statement (query)
         $statement = $this->connection->prepare($query);
-        $statement->execute(); // run the query
+        $statement->execute($params); // run the query
 
         // we've removed the fetch() method and just return
         // the result of the query
@@ -49,23 +52,36 @@ class Database {
     }
 }
 
-// and everything still works
-$query9 = "SELECT * FROM recipe_cards WHERE cat = 'fish & veg'";
-// now we can pass in the username & password when we create a new instance of the class:
-$db9 = new Database($config['dbshop'], 'root', '');
-$result9 = $db9->query($query9)->fetchAll();
-// dd($result9);
-echo '<strong>$db9 results:</strong><br><br>';
-foreach($result9 as $key=>$value) {
+// // and everything still works
+// $query9 = "SELECT * FROM recipe_cards WHERE cat = 'fish & veg'";
 
-    // $title = $value['imgTitle'];
+// // now we can pass in the username & password when we create a new instance of the class:
+// $db9 = new Database($config['dbshop'], 'root', '');
+// $result9 = $db9->query($query9)->fetchAll();
+// // dd($result9);
+// echo '<strong>$db9 results:</strong><br><br>';
+// foreach($result9 as $key=>$value) {
 
-    // $page = "<a href='https://nuttyskitchen.co.uk/{$value['page']}.html' target='_blank'>{$title}</a>";
-   
     
-    // echo $page . '<br><br>';
+//     echo "<a href='https://nuttyskitchen.co.uk/{$value['page']}.html' target='_blank'>{$value['imgTitle']}</a><br><br>";
+// }
+
+
+// use parameterized query
+$query10 = "SELECT * FROM recipe_cards WHERE cat = :cat";
+
+$cat = 'puddings';
+
+// now we can pass in the username & password when we create a new instance of the class:
+$db10 = new Database($config['dbshop'], 'root', '');
+
+// now pass in the parameter $cat
+$result10 = $db10->query($query10, [':cat' => $cat])->fetchAll();
+// dd($result9);
+echo '<strong>$db10 results:</strong><br><br>';
+foreach($result10 as $key=>$value) {
+
     
     echo "<a href='https://nuttyskitchen.co.uk/{$value['page']}.html' target='_blank'>{$value['imgTitle']}</a><br><br>";
 }
 
-// echo "<a href='https://nuttyskitchen.co.uk' target='_blank'>Nutty's Kitchen</a>";

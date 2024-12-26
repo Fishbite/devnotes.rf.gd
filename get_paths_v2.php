@@ -1,45 +1,39 @@
 <?php
 
-$projectRoot = __DIR__; // Assuming the script is located in PROJECT_ROOT
-$imageDir = 'images'; //  images folder relative to the PROJECT_ROOT
+$projectRoot = __DIR__;
+$imageDir = 'images';
 $csvFile = 'image_paths.csv';
 
-// Database connection details (replace with your own)
 $servername = "localhost";
 $username = "root";
 $password = "";
 $database = "dbshop";
 
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
 try {
-    // Create connection
     $conn = new mysqli($servername, $username, $password, $database);
 
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
-    // Create table if it does not exist
     $sql = "CREATE TABLE IF NOT EXISTS recipes (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 recipe VARCHAR(255) UNIQUE NOT NULL,
-                path TEXT NOT NULL
+                paths TEXT NOT NULL
             )";
     if ($conn->query($sql) === TRUE) {
-        echo "Table created successfully or already exists.\n";
+        echo "Table created successfully or already exists.<br><br>";
     } else {
-        echo "Error creating table: " . $conn->error . "\n";
+        echo "Error creating table: " . $conn->error . "<br><br>";
     }
 
-    // Open the CSV file for writing
     $file = fopen($csvFile, 'w');
 
     if ($file === false) {
         die("Could not open CSV file for writing.");
     }
 
-    // Function to recursively scan directories
-    function scanDirectory(string $dir, string $projectRoot, $file, mysqli $conn): void
+
+  function scanDirectory(string $dir, string $projectRoot, $file, mysqli $conn): void
     {
         $items = glob($dir . '/*');
 
@@ -47,56 +41,90 @@ try {
           return;
         }
 
+        $recipe_images = [];
+
         foreach ($items as $item) {
+
+            echo 'foreach $items as $item. $item = ' . $item . '<br><br>';
+
             if (is_dir($item)) {
-                scanDirectory($item, $projectRoot, $file, $conn); // Recursive call for subdirectories
+               $pathInfo = pathinfo($item);
+
+               echo 'is-dir? $pathInfo: <pre>' . var_dump($pathInfo) . '</pre><br><br>';
+
+                // No special handling of directories needed, just recurse
+                  scanDirectory($item, $projectRoot, $file, $conn); // Recursive call for subdirectories
+
+
             } elseif (is_file($item)) {
                 $pathInfo = pathinfo($item);
+
+
+                echo 'is_file? $pathInfo: <pre>' . var_dump($pathInfo) . '</pre><br><br>';
+
                 if (isset($pathInfo['extension']) && in_array(strtolower($pathInfo['extension']), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
                     $relativePath = str_replace($projectRoot . '/', '', $item);
-                    fputcsv($file, [$relativePath]); // write the file to the csv
+                    fputcsv($file, [$relativePath]);
 
-                    //Extract recipe name from relative path:
                     $path_parts = explode(DIRECTORY_SEPARATOR, $relativePath);
-                    if (count($path_parts) > 2) {
-                       $recipe = $path_parts[1]; // Assumes "images/recipe_name/image.jpg" pattern.
-                        // Insert data into MySQL database
-                       $stmt = $conn->prepare("INSERT INTO recipes (recipe, path) VALUES (?, ?)");
-                       $stmt->bind_param("ss", $recipe, $relativePath);
-
-                       if ($stmt->execute()) {
-                          echo "Inserted: Recipe: " . $recipe . ", Path: " . $relativePath . "\n";
+                    $images_key = array_search('images', $path_parts);
+                    
+                     if ($images_key !== false) {
+                        // Recipe name is always the element directly after "images"
+                        if (isset($path_parts[$images_key + 1])) {
+                          $recipe = $path_parts[$images_key + 1];
+                          //check if recipe has been set, and that there isn't another directory
+                          if(strpos($path_parts[$images_key+2], '.') === false){
+                            if(!isset($recipe_images[$recipe])){
+                               $recipe_images[$recipe] = [];
+                             }
+                           $recipe_images[$recipe][] = $relativePath;
+                           echo "Found recipe: " . $recipe . " for path: " . $relativePath . "<br>";
+                           } else {
+                              echo "Could not find a valid recipe name in the path for: " . $relativePath . "<br>";
+                           }
+                           
                         } else {
-                          echo "Error inserting record: " . $stmt->error . "\n";
-                       }
-                       $stmt->close();
-
+                            echo "Could not find a valid recipe name in the path for: " . $relativePath . "<br>";
+                        }
+                     } else {
+                       echo "Could not find 'images' or a recipe name in the path for: " . $relativePath . "<br>";
                     }
-                   else{
-                      echo "Skipped path due to unexpected structure: " . $relativePath ."\n";
                    }
-
-
-                }
             }
         }
+
+         foreach($recipe_images as $recipe => $paths){
+            $paths_string = implode(",", $paths);
+              $stmt = $conn->prepare("INSERT INTO recipes (recipe, paths) VALUES (?, ?)");
+
+                if ($stmt === false) {
+                      echo "Error preparing statement: " . $conn->error . "\n";
+                      continue; // Skip to next file
+                }
+
+                $stmt->bind_param("ss", $recipe, $paths_string);
+
+                if ($stmt->execute()) {
+                  echo "Inserted: Recipe: " . $recipe . ", Path: " . $paths_string . "<br>";
+                } else {
+                    echo "Error inserting record: " . $stmt->error . "\n";
+                }
+
+                 $stmt->close();
+           }
     }
 
-    // Start scanning from the image directory
     scanDirectory($projectRoot . '/' . $imageDir, $projectRoot, $file, $conn);
 
     fclose($file);
-
-    echo "CSV file '$csvFile' created successfully.\n";
+    $conn->close();
+    echo "CSV file and database updated successfully!";
 
 } catch (mysqli_sql_exception $e) {
-    echo "MySQL Error: " . $e->getMessage() . "\n";
-}
-finally {
-    if (isset($conn) && $conn)
-    {
-        $conn->close();
-    }
+    echo "MySQL Error: " . $e->getMessage();
+} catch (Exception $e) {
+    echo "General Error: " . $e->getMessage();
 }
 
 /*
